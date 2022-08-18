@@ -93,6 +93,10 @@ class ValueAgent(Agent):
         Returns:
             action defined by Q values
         """
+        if isinstance(state, list):
+            # first transform to numpy array for efficiency
+            state = np.array(state)
+
         if not isinstance(state, Tensor):
             state = torch.tensor(state, device=device)
 
@@ -127,7 +131,8 @@ class PolicyAgent(Agent):
         if not isinstance(states, list):
             states = [states]
 
-        states = torch.tensor(states, device=device)
+        # first convert to numpy array for efficiency
+        states = torch.tensor(np.array(states), device=device)
 
         # get the logits and pass through softmax for probability distribution
         probabilities = F.softmax(self.net(states)).squeeze(dim=-1)
@@ -157,7 +162,8 @@ class ActorCriticAgent(Agent):
             states = [states]
 
         if not isinstance(states, Tensor):
-            states = torch.tensor(states, device=device)
+            # first convert to numpy array for efficiency
+            states = torch.tensor(np.array(states), device=device)
 
         logprobs, _ = self.net(states)
         probabilities = logprobs.exp().squeeze(dim=-1)
@@ -187,7 +193,8 @@ class SoftActorCriticAgent(Agent):
             states = [states]
 
         if not isinstance(states, Tensor):
-            states = torch.tensor(states, device=device)
+            # first convert to numpy array for efficiency
+            states = torch.tensor(np.array(states), device=device)
 
         dist = self.net(states)
         actions = [a for a in dist.sample().cpu().numpy()]
@@ -208,7 +215,8 @@ class SoftActorCriticAgent(Agent):
             states = [states]
 
         if not isinstance(states, Tensor):
-            states = torch.tensor(states, device=device)
+            # first convert to numpy array for efficiency
+            states = torch.tensor(np.array(states), device=device)
 
         actions = [self.net.get_action(states).cpu().numpy()]
 
