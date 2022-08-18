@@ -173,7 +173,8 @@ class VanillaPolicyGradient(LightningModule):
             reward = r + self.gamma * reward
             returns.insert(0, reward)
 
-        returns = torch.tensor(returns)
+        # first convert to numpy array for efficiency
+        returns = torch.tensor(np.array(returns))
         returns = (returns - returns.mean()) / (returns.std() + self.eps)
 
         return returns

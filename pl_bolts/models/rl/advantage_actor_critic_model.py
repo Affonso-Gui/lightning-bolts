@@ -106,7 +106,8 @@ class AdvantageActorCritic(LightningModule):
             x = [x]
 
         if not isinstance(x, Tensor):
-            x = torch.tensor(x, device=self.device)
+            # first convert to numpy array for efficiency
+            x = torch.tensor(np.array(x), device=self.device)
 
         logprobs, values = self.net(x)
         return logprobs, values
@@ -179,7 +180,7 @@ class AdvantageActorCritic(LightningModule):
             returns.append(g)
 
         # reverse list and stop the gradients
-        returns = torch.tensor(returns[::-1])
+        returns = torch.tensor(np.array(returns[::-1]))
 
         return returns
 
